@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Mokkozi</string>
+    <string name="underline"><u>자세히 보기</u></string>
 </resources>

@@ -8,8 +8,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-         />
+        android:layout_alignParentTop="true" />
 
     <TextView
         android:id="@+id/text"
@@ -20,36 +19,6 @@
         android:text="회원가입"
         android:textSize="30dp" />
 
-    <EditText
-        android:id="@+id/register_pass_edt"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="159dp"
-        android:ems="10"
-        android:hint="비밀번호(6자리 이상, 숫자와 영문포함)"
-        android:inputType="textPersonName" />
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/register_id_edt"
-        android:layout_alignStart="@+id/register_pass_edt"
-        android:layout_marginBottom="-107dp"
-        android:text="전화번호" />
-
-    <EditText
-        android:id="@+id/register_id_edt"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="107dp"
-        android:ems="10"
-        android:inputType="phone" />
-
     <Button
         android:id="@+id/register_next_btn"
         android:layout_width="300dp"
@@ -59,14 +28,156 @@
         android:layout_marginTop="255dp"
         android:text="다음" />
 
-    <EditText
-        android:id="@+id/confirm_pass_edt"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="206dp"
-        android:ems="10"
-        android:hint="비밀번호 확인"
-        android:inputType="textPersonName" />
+    <FrameLayout
+        android:id="@+id/frame_layout1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <EditText
+                android:id="@+id/register_pass_edt"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="159dp"
+                android:ems="10"
+                android:hint="비밀번호(6자리 이상, 숫자와 영문포함)"
+                android:inputType="textPassword" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/register_id_edt"
+                android:layout_alignStart="@+id/register_pass_edt"
+                android:layout_marginBottom="-107dp"
+                android:text="전화번호" />
+
+            <EditText
+                android:id="@+id/register_id_edt"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="107dp"
+                android:ems="10"
+                android:inputType="phone" />
+
+            <EditText
+                android:id="@+id/confirm_pass_edt"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="206dp"
+                android:ems="10"
+                android:hint="비밀번호 확인"
+                android:inputType="textPassword" />
+        </RelativeLayout>
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/frame_layout2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="45dp"
+        android:visibility="gone">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <EditText
+                android:layout_width="135dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="157dp"
+                android:gravity="center"
+                android:hint="이름" />
+
+            <EditText
+                android:layout_width="135dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="72dp"
+                android:gravity="center"
+                android:hint="이름" />
+
+            <RadioButton
+                android:id="@+id/radioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignTop="@+id/radioButton2"
+                android:layout_marginEnd="111dp"
+                android:text="남" />
+
+            <RadioButton
+                android:id="@+id/radioButton2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginBottom="218dp"
+                android:layout_marginStart="102dp"
+                android:text="여" />
+
+            <CheckBox
+                android:id="@+id/checkBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignStart="@+id/checkBox2"
+                android:layout_marginBottom="94dp"
+                android:text="이용약관 동의" />
+
+            <CheckBox
+                android:id="@+id/checkBox2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginBottom="138dp"
+                android:layout_marginStart="81dp"
+                android:text="개인정보수집 동의" />
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/checkBox"
+                android:layout_alignStart="@+id/textView2"
+                android:text="@string/underline"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignTop="@+id/checkBox2"
+                android:layout_marginEnd="72dp"
+                android:text="@string/underline"
+                android:textStyle="bold" />
+        </RelativeLayout>
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/frame_layout3"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true">
+
+    </FrameLayout>
+
 </RelativeLayout>
