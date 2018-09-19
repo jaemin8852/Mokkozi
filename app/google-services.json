@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "492718167932",
+    "firebase_url": "https://mokkozi-784a0.firebaseio.com",
+    "project_id": "mokkozi-784a0",
+    "storage_bucket": "mokkozi-784a0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:492718167932:android:eb51c2a451e0d1d0",
+        "android_client_info": {
+          "package_name": "mokkozi.com.mokkozi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "492718167932-ogoe25d4ti5oj7j3aermmqv1i7dju73d.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "mokkozi.com.mokkozi",
+            "certificate_hash": "f8987d263321b885986e50ff72d7d96f203fceb4"
+          }
+        },
+        {
+          "client_id": "492718167932-4oucl4usqp5m4d3hbi6hraacvsjb9jus.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD_KXKMYGVPqGsOtQlL1yarg5DlLloGN9M"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "492718167932-4oucl4usqp5m4d3hbi6hraacvsjb9jus.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
