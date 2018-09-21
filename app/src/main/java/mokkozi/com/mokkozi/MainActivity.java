@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //TODO : 로그인 했는지 체크
-                Intent intent=new Intent(MainActivity.this, ChatActivity.class);
+                Intent intent=new Intent(MainActivity.this, TabActivity.class);
                 startActivity(intent);
             }
         });

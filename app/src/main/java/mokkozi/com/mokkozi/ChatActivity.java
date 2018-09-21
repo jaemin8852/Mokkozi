@@ -48,6 +48,11 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+//import kr.co.shineware.nlp.komoran.constant.DEFAULT_MODEL;
+//import kr.co.shineware.nlp.komoran.core.Komoran;
+//import kr.co.shineware.nlp.komoran.model.Token;
+
+
 public class ChatActivity extends AppCompatActivity {
 
     ApplicationController application;
@@ -93,11 +98,10 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String stText = etText.getText().toString();
-                if(etText.equals("") || stText.isEmpty()){
+                if (etText.equals("") || stText.isEmpty()) {
                     Toast.makeText(getApplicationContext(), "내용을 입력해주세요.", Toast.LENGTH_SHORT).show();
-                }
-                else{
-                    Toast.makeText(getApplicationContext(), email+"," +stText, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), email + "," + stText, Toast.LENGTH_SHORT).show();
                     // Write a message to the database
 
                     Calendar c = Calendar.getInstance();
@@ -110,27 +114,35 @@ public class ChatActivity extends AppCompatActivity {
                     chat.put("email", email);
                     chat.put("text", stText);
                     myRef.setValue(chat);
+                    etText.setText("");
+
+//                    Komoran komoran = new Komoran(DEFAULT_MODEL.FULL);
+//                    komoran.setUserDic("user_data/dic.user");
+//                    List<Token> tokens = komoran.analyze("청하는아이오아이출신입니다").getTokenList();
+//                    for(Token token : tokens)
+//                        Log.d("token : ", token.toString());
                 }
             }
         });
 
         mRecyclerView.setHasFixedSize(true);
 
-        mLayoutManager= new LinearLayoutManager(this);
+        mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mChat = new ArrayList<>();
-        mAdapter = new MyAdapter(mChat);
+        mAdapter = new MyAdapter(mChat, email, ChatActivity.this);
         mRecyclerView.setAdapter(mAdapter);
 
-        DatabaseReference myRef = database.getReference("chats");
-        myRef.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                Chat chat = dataSnapshot.getValue(Chat.class);
+            DatabaseReference myRef = database.getReference("chats");
+            myRef.addChildEventListener(new ChildEventListener() {
+                @Override
+                public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                    Chat chat = dataSnapshot.getValue(Chat.class);
 
-                mChat.add(chat);
-                mAdapter.notifyItemInserted(mChat.size()-1);
-            }
+                    mChat.add(chat);
+                    mRecyclerView.scrollToPosition(mChat.size() - 1);
+                    mAdapter.notifyItemInserted(mChat.size() - 1);
+                }
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
@@ -183,225 +195,5 @@ public class ChatActivity extends AppCompatActivity {
                 Log.i(ApplicationController.TAG, "Fail Message : " + t.getMessage());
             }
         });
-
-        //sendHttpWithMsg("http://5ba91c1f.ngrok.io/api/signup/");
-//        try {
-//            sendHttpWithMsg();
-//        }catch (Exception e){
-//            e.getStackTrace();
-//        }
-      // POST("http://dca9b1b9.ngrok.io/");
-
-//        new NetworkTask(new JSONObject()).execute();
-
     }
-
-//    public static String POST(String url1) {
-//
-//        //Restaurant POST
-//        Information information = new Information("소정아 이거 될 각이다", "helpmeplz!", "Idontwant@naver.com", "여자");
-//
-//        Call<Information> postCall = networkService.post_information(information);
-//
-//        postCall.enqueue(new Callback<Information>() {
-//            @Override
-//            public void onResponse(Call<Information> call, Response<Information> response) {
-//                if (response.isSuccessful()) {
-//
-//                } else {
-//                    int StatusCode = response.code();
-//                    try {
-//                        Log.i(ApplicationController.TAG, "Status Code : " + StatusCode + " Error Message : " + response.errorBody().string());
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<Information> call, Throwable t) {
-//                Log.i(ApplicationController.TAG, "Fail Message : " + t.getMessage());
-//            }
-//        });
-//    return "Adsf";
-
-
-
-                             //        String json = "";
-//        try {
-//            URL url = new URL(url1);
-//            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-//            connection.setRequestProperty("User-Agent", "");
-//            connection.setRequestMethod("POST");                                                            //여기는 한번 coonect 시험해본 곳
-//            connection.setDoInput(true);
-//            connection.connect();
-//
-//
-//
-//
-//            Log.d("REQUESTOUTPUT", "requesting");
-//
-//
-//        } catch (IOException e) {
-//            // writing exception to log
-//            e.printStackTrace();
-//        }
-//
-//        InputStream is = null;                                                            //여기부터는 Json 통신 시험해본 곳
-//        String result = "";
-//        try {
-//            URL urlCon = new URL(url1);
-//            HttpURLConnection httpCon = (HttpURLConnection) urlCon.openConnection();
-//            Log.d("asdf", httpCon.toString());
-
-
-
-            // build jsonObject
-//            JSONObject jsonObject = new JSONObject();
-//            jsonObject.accumulate("id", "tetestete");
-//            jsonObject.accumulate("password", "@naver1107");
-//            jsonObject.accumulate("email", "asdf@naver.com");
-//            jsonObject.accumulate("gender", "여자");
-
-            // convert JSONObject to JSON to String
-//            Log.d("asdf", String.valueOf(jsonObject));
-//            json = jsonObject.toString();
-
-            // ** Alternative way to convert Person object to JSON string usin Jackson Lib
-            // ObjectMapper mapper = new ObjectMapper();
-            // json = mapper.writeValueAsString(person);
-
-            // Set some headers to inform server about the type of the content
-           // httpCon.setRequestProperty("Accept", "application/json");
-//            httpCon.setRequestProperty("Content-type", "application/json; charset=UTF-8");
-           // httpCon.setRequestProperty("User-Agent", "");
-//            httpCon.setRequestMethod("POST");
-
-            // OutputStream으로 POST 데이터를 넘겨주겠다는 옵션.
-//            httpCon.setDoOutput(true);
-            // InputStream으로 서버로 부터 응답을 받겠다는 옵션.
-//            httpCon.setDoInput(true);
-           // httpCon.connect();
-//            Log.d("asdf", "two");
-            //OutputStream os = httpCon.getOutputStream();
-//            Log.d("AAAA", json.toString());
-            //byte[] outputBytes = jsonObject.toString().getBytes("UTF-8");
-            //Log.d("dsds", outputBytes.toString());
-
-           // os.write(json.getBytes("UTF-8"));
-            //os.write("123456789".getBytes("UTF-8"));
-            //os.close();
-//            os.flush();
-            // receive response as inputStream
-//            try {
-//                String otherParametersUrServiceNeed =  "{\"jsonrpc\": \"1.0\", \"method\": \"HelloMethod\", \"params\": \"{}\" }";
-//
-//                DataOutputStream wr = new DataOutputStream(httpCon.getOutputStream());
-//
-//                Log.d("asdf", "0");
-//                //wr.writeBytes(otherParametersUrServiceNeed);
-//                //wr.writeBytes(URLEncoder.encode(json, "UTF-8"));
-//                wr.writeBytes(json);
-//
-//
-//            //wr.flush();
-//            wr.close();
-//
-//
-//                is = httpCon.getInputStream();
-//                // convert inputstream to string
-//                if (is != null)
-//                    ;
-//                    //result = convertInputStreamToString(is);
-//                else
-//                    result = "Did not work!";
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            } finally {
-//                httpCon.disconnect();
-//            }
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        } catch (Exception e) {
-            //Log.d("InputStream", e.getLocalizedMessage());
-       //     ;
-//        }
-
-
-//
-//        return result;
-
-//    public String sendHttpWithMsg() throws MalformedURLException {
-//        String otherParametersUrServiceNeed =  "{\"jsonrpc\": \"1.0\", \"method\": \"HelloMethod\", \"params\": \"{}\" }";
-//        String request = "http://5ba91c1f.ngrok.io/api/signup/";
-//
-//        try {
-//
-//            Log.d("asdf", "3");
-//
-//            URL url = new URL(request);
-//            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-//            connection.setDoOutput(true);
-//            connection.setDoInput(true);
-//            connection.setInstanceFollowRedirects(false);
-//            connection.setRequestMethod("POST");
-//            connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-//            connection.setRequestProperty("charset", "utf-8");
-//            connection.setRequestProperty("Content-Length", "" + Integer.toString(request.getBytes().length));
-//            connection.setUseCaches(false);
-//
-//
-//            Log.d("asdf", "2");
-//
-//            DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
-//
-//            Log.d("asdf", "0");
-//
-//
-//            wr.writeBytes(otherParametersUrServiceNeed);
-//
-//            Log.d("asdf", "1");
-//
-//            JSONObject jsonParam = new JSONObject();
-//            jsonParam.put("id", "1234Hello");
-//            jsonParam.put("password", "@naver1107");
-//            jsonParam.put("email", "1234@naver.com");
-//            jsonParam.put("gender", "여자");
-//
-//            Log.d("asdf", jsonParam.toString());
-//
-//            wr.writeBytes(jsonParam.toString());
-//
-//            wr.flush();
-//            wr.close();
-//        }
-//        catch (Exception e){
-//            Log.d("asdf", e.getStackTrace().toString());
-//        }
-//        return json;
-//    }
- //   }
-//    class NetworkTask extends AsyncTask<Void, Void, String> {
-//
-//        private JSONObject jsonObject;
-//
-//        public NetworkTask(JSONObject jsonObject ) {
-//            this.jsonObject = jsonObject;
-//        }
-//
-//        @Override
-//        protected String doInBackground(Void... params) {
-//
-//            String result = POST("http://5ba91c1f.ngrok.io/api/signup/");
-//
-//            return result;
-//        }
-//
-//        @Override
-//        protected void onPostExecute(String s) {
-//            //super.onPostExecute(s);
-//
-//            Log.d("MOKKOZI HTTP RES",s); // -> a
-//        }
-//    }
  }
