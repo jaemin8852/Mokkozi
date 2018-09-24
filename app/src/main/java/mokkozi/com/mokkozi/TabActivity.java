@@ -22,18 +22,7 @@ public class TabActivity extends AppCompatActivity {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
-                case R.id.navigation_home:
-                    fragment = new HomeFragment();
-                    switchFragment(fragment);
-                    return true;
-                case R.id.navigation_dashboard:
-                    fragment = new FriendsFragment();
-                    switchFragment(fragment);
-                    return true;
-                case R.id.navigation_notifications:
-                    fragment  = new ProfileFragment();
-                    switchFragment(fragment);
-                    return true;
+
             }
             return false;
         }
@@ -46,10 +35,10 @@ public class TabActivity extends AppCompatActivity {
 
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        HomeFragment newFragment = new HomeFragment();
+        ProfileFragment newFragment = new ProfileFragment();
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
-        HomeFragment fragment = new HomeFragment();
+        ProfileFragment fragment = new ProfileFragment();
         fragmentTransaction.add(R.id.content, fragment);
         fragmentTransaction.commit();
 

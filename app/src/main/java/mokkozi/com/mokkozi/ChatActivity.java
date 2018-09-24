@@ -1,8 +1,11 @@
 package mokkozi.com.mokkozi;
 
+import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -12,7 +15,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -22,6 +27,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.apache.http.Header;
 import org.json.JSONObject;
@@ -48,9 +54,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-//import kr.co.shineware.nlp.komoran.constant.DEFAULT_MODEL;
-//import kr.co.shineware.nlp.komoran.core.Komoran;
-//import kr.co.shineware.nlp.komoran.model.Token;
+import static android.content.ContentValues.TAG;
 
 
 public class ChatActivity extends AppCompatActivity {
@@ -60,140 +64,224 @@ public class ChatActivity extends AppCompatActivity {
     RecyclerView mRecyclerView;
     RecyclerView.Adapter mAdapter;
     RecyclerView.LayoutManager mLayoutManager;
-    String[] myDataset = {"안녕", "오늘", "뭐했어", "영화볼래?"};
     EditText etText;
-    Button btnSend;
+    ImageView btnSend;
     String email;
+    String uid;
+    String person;
     FirebaseDatabase database;
     List<Chat> mChat;
+    ImageView beforeBtn;
+    String stText;
+    Calendar c;
+    SimpleDateFormat df;
+    String formatDate;
+    SimpleDateFormat tf;
+    String formatTime;
+    int num, buk;
+    Handler mHandler = null;
+    Context context;
+    ImageView exitBtn;
+    String opponent;
+    TextView name;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
-//        ButterKnife.bind(this);
 
         application = ApplicationController.getInstance();
-        application.buildNetworkService("b41eb0a1.ngrok.io");
-        //application.buildNetworkService("자신의 ip", 8000);
+        application.buildNetworkService("18265006.ngrok.io");
         networkService = ApplicationController.getInstance().getNetworkService();
         mRecyclerView = findViewById(R.id.my_recycler_view);
+        beforeBtn = findViewById(R.id.beforeBtn);
         database = FirebaseDatabase.getInstance();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        exitBtn = findViewById(R.id.exitButton);
+        name = findViewById(R.id.name);
+
+
+
+
+        beforeBtn.setOnClickListener(new View.OnClickListener() {       //before 버튼 눌렀을 때, 종료
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
+
+
+
         if (user != null) {
             email = user.getEmail();
-
-//            // Check if user's email is verified
-//            boolean emailVerified = user.isEmailVerified();
-//
-//            // The user's ID, unique to the Firebase project. Do NOT use this value to
-//            // authenticate with your backend server, if you have one. Use
-//            // FirebaseUser.getToken() instead.
-//            String uid = user.getUid();
+            uid = user.getUid();
         }
+
+        context= this;
+
+        database.getReference().child("users").child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                try {
+                    num = Integer.parseInt(dataSnapshot.child("num").getValue().toString());
+                    buk = Integer.parseInt(dataSnapshot.child("buk").getValue().toString());
+                    opponent = dataSnapshot.child("opponent").getValue().toString();
+
+                    if(buk == 1) name.setText(opponent +" <남한>");
+                    else name.setText(opponent + " <북한>");
+
+                    Log.d("asdfasdf","numcho!!"+Integer.toString(num));
+
+                    mRecyclerView.setHasFixedSize(true);
+
+                    mLayoutManager = new LinearLayoutManager(context);
+                    mRecyclerView.setLayoutManager(mLayoutManager);
+                    mChat = new ArrayList<>();
+                    mAdapter = new MyAdapter(mChat, email, ChatActivity.this);
+                    mRecyclerView.setAdapter(mAdapter);
+
+                    DatabaseReference myRef = database.getReference("chats/"+num);
+                    myRef.addChildEventListener(new ChildEventListener() {
+                        @Override
+                        public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                            Chat chat = dataSnapshot.getValue(Chat.class);
+
+                            mChat.add(chat);
+                            mRecyclerView.scrollToPosition(mChat.size() - 1);
+                            mAdapter.notifyItemInserted(mChat.size() - 1);
+                        }
+
+                        @Override
+                        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {}
+                        @Override
+                        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {}
+                        @Override
+                        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {}
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {}
+                    });
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Failed to read value
+                Log.w(TAG, "Failed to read value.", error.toException());
+            }
+        });
+
+
+
         etText = findViewById(R.id.etText);
         btnSend = findViewById(R.id.btnSend);
         btnSend.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
-                String stText = etText.getText().toString();
+                stText = etText.getText().toString().trim();
                 if (etText.equals("") || stText.isEmpty()) {
                     Toast.makeText(getApplicationContext(), "내용을 입력해주세요.", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(getApplicationContext(), email + "," + stText, Toast.LENGTH_SHORT).show();
-                    // Write a message to the database
 
-                    Calendar c = Calendar.getInstance();
-                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    String formatDate = df.format(c.getTime());
 
-                    DatabaseReference myRef = database.getReference("chats").child(formatDate);
+                    c = Calendar.getInstance();
+                    df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    formatDate = df.format(c.getTime());
+                    tf = new SimpleDateFormat("HH:mm");
+                    formatTime= tf.format(c.getTime());
 
-                    Hashtable<String, String> chat = new Hashtable<String, String>();
-                    chat.put("email", email);
-                    chat.put("text", stText);
-                    myRef.setValue(chat);
-                    etText.setText("");
 
-//                    Komoran komoran = new Komoran(DEFAULT_MODEL.FULL);
-//                    komoran.setUserDic("user_data/dic.user");
-//                    List<Token> tokens = komoran.analyze("청하는아이오아이출신입니다").getTokenList();
-//                    for(Token token : tokens)
-//                        Log.d("token : ", token.toString());
+
+                    //Restaurant POST
+                    Call<Result> postCall = networkService.post_information(stText);
+
+                    postCall.enqueue(new Callback<Result>() {
+                        @Override
+                        public void onResponse(Call<Result> call, Response<Result> response) {
+
+                            DatabaseReference myRef = database.getReference("chats/"+num).child(formatDate);
+                            if (response.isSuccessful()) {
+                                Log.i("adsf", "good!");
+//                                Log.i("resgood", response.body().getOriginal_sentence());
+                                Log.i("resgood", response.body().toString());
+                                Log.i("resgood", response.body().getSentence());
+                                Log.i("resgood", response.body().getMessage());
+                                Log.i("resgood", response.body().getResult());
+                                if(buk == 1) stText = response.body().getSentence();
+                                Hashtable<String, String> chat = new Hashtable<String, String>();
+                                chat.put("email", email);
+                                chat.put("text", stText);
+                                chat.put("time", formatTime);
+                                myRef.setValue(chat);
+                                etText.setText("");
+                            } else {
+                                int StatusCode = response.code();
+                                Hashtable<String, String> chat = new Hashtable<String, String>();
+                                chat.put("email", email);
+                                chat.put("text", stText);
+                                chat.put("time", formatTime);
+                                myRef.setValue(chat);
+                                etText.setText("");
+                                try {
+                                    Log.i("AAAAAAA", "Status Code : " + StatusCode + " Error Message : " + response.errorBody().string());
+                                } catch (IOException e) {
+                                    Log.i("adsf", "Nooooo");
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Result> call, Throwable t) {
+                            Log.i(ApplicationController.TAG, "Fail Message : " + t.getMessage());
+                            DatabaseReference myRef = database.getReference("chats/"+num).child(formatDate);
+
+                            Hashtable<String, String> chat = new Hashtable<String, String>();
+                            chat.put("email", email);
+                            chat.put("text", stText);
+                            chat.put("time", formatTime);
+                            myRef.setValue(chat);
+                            etText.setText("");
+                        }
+                    });
+
                 }
             }
         });
 
-        mRecyclerView.setHasFixedSize(true);
 
-        mLayoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mChat = new ArrayList<>();
-        mAdapter = new MyAdapter(mChat, email, ChatActivity.this);
-        mRecyclerView.setAdapter(mAdapter);
-
-            DatabaseReference myRef = database.getReference("chats");
-            myRef.addChildEventListener(new ChildEventListener() {
-                @Override
-                public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                    Chat chat = dataSnapshot.getValue(Chat.class);
-
-                    mChat.add(chat);
-                    mRecyclerView.scrollToPosition(mChat.size() - 1);
-                    mAdapter.notifyItemInserted(mChat.size() - 1);
-                }
-
+        exitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+            public void onClick(View view) {
+                c = Calendar.getInstance();
+                df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                formatDate = df.format(c.getTime());
+                tf = new SimpleDateFormat("HH:mm");
+                formatTime= tf.format(c.getTime());
 
-            }
 
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                DatabaseReference myRef = database.getReference("chats/"+num).child(formatDate);
+                Hashtable<String, String> chat = new Hashtable<String, String>();
+                chat.put("email", email);
+                chat.put("text", "---------- "+email+"님이 나가셨습니다. ----------");
+                chat.put("time", formatTime);
+                myRef.setValue(chat);
 
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                database.getReference("users/"+uid).child("num").setValue(0);
+                database.getReference("users/"+uid).child("buk").setValue(0);
+                database.getReference("users/"+uid).child("opponent").setValue("");
+                database.getReference().child("users").child(uid).child("flag").setValue(0);
+                finish();
             }
         });
 
-        //Restaurant POST
-        Information information = new Information("소정아 이거 될 각이다", "helpmeplz!", "Idontwant@naver.com", "여자");
 
-        Call<Information> postCall = networkService.post_information("소정아 이거 될 각이다", "helpmeplz!", "Idontwant@naver.com", "여자");
-
-        postCall.enqueue(new Callback<Information>() {
-            @Override
-            public void onResponse(Call<Information> call, Response<Information> response) {
-                if (response.isSuccessful()) {
-                    Log.i("adsf", "good!");
-//                    Log.i("adsf", response.body().getEmail());
-//                    Log.i("adsf", response.body().getGender());
-//                    Log.i("adsf", response.body().getId());
-//                    Log.i("adsf", response.body().getPw());
-                } else {
-                    int StatusCode = response.code();
-                    try {
-                        Log.i("AAAAAAA", "Status Code : " + StatusCode + " Error Message : " + response.errorBody().string());
-                    } catch (IOException e) {
-                        Log.i("adsf", "Nooooo");
-                        e.printStackTrace();
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Information> call, Throwable t) {
-                Log.i(ApplicationController.TAG, "Fail Message : " + t.getMessage());
-            }
-        });
     }
  }

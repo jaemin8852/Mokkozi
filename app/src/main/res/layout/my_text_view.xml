@@ -2,18 +2,39 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:layout_height="wrap_content">
-    <TextView
+    <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/mTextView"
-        android:background="@drawable/chat_bubble"
-        android:textSize="15sp"
-
-        android:paddingStart="10dp"
-        android:paddingEnd="10dp"
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginBottom="5dp"
-        />
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/personImg"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/profile"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/mTextView"
+            android:background="@drawable/chat_bubble"
+            android:textSize="15sp"
+            android:maxWidth="200dp"
+    
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_toRightOf="@+id/personImg"
+            />
+        <TextView
+            android:id="@+id/timeTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/mTextView"
+            android:layout_alignBottom="@+id/mTextView"
+            />
+    </RelativeLayout>
 </LinearLayout>

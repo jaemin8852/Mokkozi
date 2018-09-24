@@ -1,6 +1,7 @@
 package mokkozi.com.mokkozi;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +19,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.Hashtable;
+
 public class LoginActivity extends AppCompatActivity {
     ProgressBar pbLogin;
     TextView go_re_txt;
@@ -27,6 +30,7 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     String TAG = "LoginActivity ";
+    FirebaseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,10 +46,15 @@ public class LoginActivity extends AppCompatActivity {
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
+                user = firebaseAuth.getCurrentUser();
                 if (user != null) {
                     // User is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+                    SharedPreferences sharedPreferences = getSharedPreferences("uid", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("uid", user.getUid());
+                    editor.putString("email", user.getEmail());
+                    editor.apply();
                 } else {
                     // User is signed out
                     Log.d(TAG, "onAuthStateChanged:signed_out");
@@ -73,6 +82,7 @@ public class LoginActivity extends AppCompatActivity {
                              public void onComplete(@NonNull Task<AuthResult> task) {
                                  Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
 
+
                                  // If sign in fails, display a message to the user. If sign in succeeds
                                  // the auth state listener will be notified and logic to handle the
                                  // signed in user can be handled in the listener.
@@ -86,7 +96,8 @@ public class LoginActivity extends AppCompatActivity {
                                      pbLogin.setVisibility(View.GONE);
                                      /*Intent intent=new Intent(LoginActivity.this, ChatActivity_main.class);
                                      startActivity(intent);*/
-                                     finish();
+
+
                                  }
 
                                  // ...

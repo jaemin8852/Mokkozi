@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.w3c.dom.Text;
+
 import java.util.List;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
@@ -19,15 +21,18 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         Context context;
 
 
+
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
         public TextView mTextView;
+        public TextView timeTxt;
         public MyViewHolder(View itemView) {
             super(itemView);
             mTextView = itemView.findViewById(R.id.mTextView);
+            timeTxt = itemView.findViewById(R.id.timeTxt);
         }
     }
 
@@ -73,12 +78,22 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         holder.mTextView.setText(mChat.get(position).getText());
-        holder.mTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(context, String.valueOf(position), Toast.LENGTH_SHORT).show();
-            }
-        });
+        String timekor = "";
+        int h = Integer.parseInt(mChat.get(position).getTime().substring(0,2));
+        String m = mChat.get(position).getTime().substring(3,5);
+        if(h > 12){
+            holder.timeTxt.setText("오후 "+(h-12)+":"+m);
+        }
+        else if(h == 12){
+            holder.timeTxt.setText("오후 "+h+":"+m);
+        }
+        else if(h == 0){
+            holder.timeTxt.setText("오전 "+12+":"+m);
+        }
+        else{
+            holder.timeTxt.setText("오전 "+h+":"+m);
+        }
+
     }
 
     // Return the size of your dataset (invoked by the layout manager)

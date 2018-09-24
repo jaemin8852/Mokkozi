@@ -22,22 +22,6 @@ public class ApplicationController extends Application {
 
     private String baseUrl;
 
-//    public void buildNetworkService(String ip, int port){
-//        synchronized (ApplicationController.class){
-//            if (networkService == null){
-//                baseUrl = String.format("http://%s:%d/", ip, port);
-//                Log.i(TAG, baseUrl);
-//
-//                Retrofit retrofit = new Retrofit.Builder()
-//                        .baseUrl(baseUrl)
-//                        .addConverterFactory(GsonConverterFactory.create())
-//                        .build();
-//
-//                networkService = retrofit.create(Api.class);
-//            }
-//        }
-//    }
-
     public void buildNetworkService(String ip){
         synchronized (ApplicationController.class){
             if (networkService == null){
